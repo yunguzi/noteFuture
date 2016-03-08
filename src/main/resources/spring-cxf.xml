@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://cxf.apache.org/jaxrs
+       http://cxf.apache.org/schemas/jaxrs.xsd">
+
+<!-- 早期的版本中使用,如果是servlet引入的话则下面三句不用了，因为框架引入了 -->
+   <!--  <import resource="classpath:META-INF/cxf/cxf.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" /> -->
+    
+     <!-- 配置restful方式的web服务  jaxrs:server servlet引入 （另外一种是jaxws：endpoint引入） -->
+     <!-- 
+        id:唯一标识
+        address：访问url
+        serviceClass：接口类型
+     -->
+     <jaxrs:server address="/rest">
+        <jaxrs:serviceBeans>
+            <ref bean="ProductServiceImpl"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>  
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />  
+        </jaxrs:providers> 
+		<jaxrs:extensionMappings>  
+            <entry key="json" value="application/json" />  
+            <entry key="xml" value="application/xml" />  
+        </jaxrs:extensionMappings>  
+		<!-- 
+		返回JSON格式： http://localhost:8080/demo/webservice/rest_HelloWorld/getList/1?_type=json
+		返回XML格式： http://localhost:8080/demo/webservice/rest_HelloWorld/getList/1?_type=xml
+		-->
+		<!-- 	<jaxrs:inInterceptors>
+			<ref bean="authHeaderInterceptor" />
+		</jaxrs:inInterceptors> -->
+       <!--  加入消息拦截器   -->
+        <jaxrs:inInterceptors>
+            <bean class="org.apache.cxf.interceptor.LoggingInInterceptor"></bean>
+        </jaxrs:inInterceptors>
+        <jaxrs:outInterceptors>
+            <bean class="org.apache.cxf.interceptor.LoggingOutInterceptor"></bean>
+        </jaxrs:outInterceptors>
+    </jaxrs:server>
+	<bean id="ProductServiceImpl" class="wsserviceImpl.ProductServiceImpl"/>
+
+</beans>

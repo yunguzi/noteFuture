@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>noteFuture</display-name>
+ 	
+    
+    <!-- 所有带有 /ws 前缀的请求，将会交给被 CXFServlet 进行处理，也就是处理 WS 请求了。
+	目前主要使用了 Spring IOC 的特性，利用了 ContextLoaderListener 加载 Spring 配置文件 -->
+	
+ 	<!-- 指定spring配置文件的位置 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring.xml</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    
+    <!-- 配置CXF框架的核心Servlet  -->
+    <servlet>
+        <servlet-name>cxf</servlet-name>
+        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+        <!-- 通过初始化参数指定配置文件的位置 -->
+        <!-- 
+        <init-param>
+            <param-name>config-location</param-name>
+            <param-value>classpath:cxf-servlet.xml</param-value>
+        </init-param>
+         -->
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>cxf</servlet-name>
+        <url-pattern>/ws/*</url-pattern>
+    </servlet-mapping>
+    
+    <welcome-file-list>
+       <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list> 
+ 	
+</web-app>
